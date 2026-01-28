@@ -1,8 +1,111 @@
-## Installation
+# On the Emergence of Adversarial Robustness in Medical VLMs
 
-1. Clone the repository and move to the attack folder:
-   ```
-   cd path/to/repo/attack
+This project explores the robustness of Vision Language Models (VLMs) in the medical domain when facing adversarial attacks. The workflow includes SSL finetuning of medical VLMs, denoised smoothing implementation, and comprehensive adversarial attack experiments.
+
+---
+
+## 📁 Project Structure Overview
+
+The project follows a two-stage workflow:
+
+1. **Stage 1: Finetuning VLMs with SSL** - Train and prepare robust models
+2. **Stage 2: Adversarial Attacks** - Evaluate robustness against adversarial examples
+
+---
+
+## 1. SSL Finetuning for VLMs
+
+### Overview
+
+This stage includes training Vision Language Models with Self-Supervised Learning (SSL) and Adversarial Training (AT) variants. The notebooks provide integrated scripts that automatically import necessary libraries.
+
+### Key Components
+
+#### **src/SSL_CTL.ipynb** - Main Training Script
+
+This notebook contains the primary script for finetuning three medical VLMs:
+
+**Supported Models:**
+- **MedCLIP** - Medical-domain CLIP model
+- **BioMedCLIP** - Biomedical-focused CLIP variant
+- **ENTRepCLIP** - Entropy-based medical CLIP
+
+**Training Modes:**
+- `SSL` - Self-Supervised Learning finetuning
+- `AT` - Adversarial Training finetuning
+
+**Features:**
+- Auto-imports all required libraries and dependencies
+- Integrated dataset loading and preprocessing
+- Model training with configurable hyperparameters
+- Automatic checkpoint saving
+- Validation during training
+
+**Usage:**
+```bash
+# Open and run the notebook
+jupyter notebook src/SSL_CTL.ipynb
+```
+
+The notebook guides you through:
+1. Loading and preparing datasets
+2. Initializing models (SSL or AT variants)
+3. Configuring training parameters
+4. Running the training process
+5. Saving trained models
+
+#### **src/DS_CTL.ipynb** - Denoised Smoothing
+
+This notebook contains the re-implemented script for Denoised Smoothing (DS) certification with VLMs.
+
+**Features:**
+- Implements certified robustness evaluation
+- Uses pre-trained or finetuned VLM models
+- Evaluates smoothed predictions under perturbations
+- Generates robustness certificates
+
+**Usage:**
+```bash
+# Open and run the notebook
+jupyter notebook src/DS_CTL.ipynb
+```
+
+The notebook includes:
+1. Loading trained VLM models
+2. Configuring smoothing parameters
+3. Running denoised smoothing evaluation
+4. Analyzing robustness certificates
+
+### Training Workflow
+
+1. **Start with SSL_CTL.ipynb**
+   - Choose your target model (MedCLIP, BioMedCLIP, or ENTRepCLIP)
+   - Select training mode (SSL or AT)
+   - Run the training process
+   - Save the trained model
+
+2. **Run DS_CTL.ipynb** (optional)
+   - Load the trained model from Step 1
+   - Apply denoised smoothing certification
+   - Evaluate robustness certificates
+
+3. **Proceed to Stage 2** (Attack experiments)
+   - Use trained models from Stage 1
+   - Execute attack scripts to evaluate adversarial robustness
+
+---
+
+## 2. Adversarial Attack Experiments
+
+### Overview
+
+This folder contains code and data for conducting comprehensive adversarial attacks on various medical VLM models to evaluate their robustness.
+
+### Installation
+
+1. Navigate to the attack folder:
+   ```bash
+   cd attack
    ```
 
 2. Install dependencies:
@@ -10,15 +113,27 @@
    pip install -r requirements.txt
    ```
 
-   (Note: Create a `requirements.txt` file with necessary packages like torch, torchvision, tqdm, numpy, PIL, pyyaml, pandas, etc.)
-   
 3. Download required datasets and place them in the `local_data` directory as specified in `modules/utils/constants.py`.
 
-## Usage
+### Key Files
+
+- **main_attack.py** - Main script to perform attacks
+- **eval.py** - Evaluate attack results
+- **test_clean_performance.py** - Test performance on original data
+- **transfer_attack.py** - Transfer attacks between models
+- **ds_test.py** - Test denoised smoothing robustness
+
+### Models Tested
+
+- **MedCLIP** - Medical CLIP variant
+- **BioMedCLIP** - Biomedical CLIP model
+- **ENTRepCLIP** - Entropy-based medical CLIP
+- **ViT-B-16, ViT-B-32, ViT-L-14** - Vision Transformer variants
+- **RobustMedCLIP** - Adversarially trained MedCLIP
 
 ### Running Attacks
 
-Use the main script to perform adversarial attacks. Here's an example command for running a NES attack on the RSNA dataset with MedCLIP model:
+Use the main script to perform adversarial attacks. Example command for NES attack on RSNA dataset with MedCLIP:
 
 ```bash
 python main_attack.py \
@@ -38,69 +153,104 @@ python main_attack.py \
     --mode_pretrained ssl
 ```
 
-### Available Options
+### Available Attack Options
 
-- `--dataset_name`: Choose from 'rsna', 'covid', 'mimic', 'entrep'
-- `--model_name`: Choose from 'medclip', 'biomedclip', 'entrep', 'ViT-B-32', 'ViT-B-16', 'ViT-L-14'
-- `--attacker_name`: Specify the attack method (e.g., 'NES', 'ES_1_Lambda', 'PGD', 'CEM', 'ESGD', 'GridES_1_Lambda')
-- `--epsilon` or `--eps`: Perturbation budget (default: 8/255)
-- `--norm`: Norm for perturbation (e.g., 'linf', 'l2')
-- `--max_evaluation`: Maximum number of evaluations for the attack
+**Datasets:**
+- `rsna` - Pneumonia detection dataset
+- `covid` - COVID-19 detection from chest X-rays
+- `mimic` - Chest X-ray abnormality detection
+- `entrep` - Medical dataset variant
+
+**Attack Methods:**
+- `NES` - Natural Evolutionary Strategies
+- `ES_1_Lambda` - Evolutionary Strategy attack
+- `PGD` - Projected Gradient Descent
+- `CEM` - Class Expectation over Max
+- `ESGD` - Evolutionary Stochastic Gradient Descent
+- `GridES_1_Lambda` - Grid-based Evolutionary Strategy
+
+**Key Parameters:**
+- `--epsilon` / `--eps`: Perturbation budget (default: 8/255)
+- `--norm`: Norm for perturbation (`linf`, `l2`)
+- `--max_evaluation`: Maximum evaluations for the attack
 - `--q`: Query parameter for NES
 - `--batch_q`: Batch query size
 - `--alpha`: Step size for updates
 - `--out_dir`: Output directory for results
-- `--index_path`: Path to file with indices of samples to attack
+- `--index_path`: Path to indices of samples to attack
 - `--start_idx`: Starting index for processing
 - `--end_idx`: Ending index for processing
-- `--mode`: Mode for the attack (e.g., 'post_transform')
-- `--mode_pretrained`: Pretraining mode (e.g., 'ssl' for self-supervised learning)
+- `--mode`: Attack mode (e.g., `post_transform`)
+- `--mode_pretrained`: Pretraining mode (`ssl`, `at`, etc.)
 
 ### Evaluating Results
 
-Results are saved in the specified `out_dir` or `evaluate_result/` directory. Use the evaluation scripts to analyze attack performance.
+Results are saved in the specified `out_dir` or `evaluate_result/` directory. Results include:
+- Attack success rates
+- Perturbation norms
+- Query efficiency metrics
+- Per-sample analysis
 
-## Datasets
+See `evaluate_result/` folder for example results from different models and datasets.
 
-- **RSNA**: Pneumonia detection dataset
-- **COVID**: COVID-19 detection from chest X-rays
-- **MIMIC**: Chest X-ray abnormality detection
-- **Entrep**: Entrepreneurship-related dataset (adapted for medical use?)
-
-## Models
-
-- **MedCLIP**: Medical Vision-Language model
-- **BioMedCLIP**: Biomedical CLIP model
-- **Entrep**: Custom dual-encoder model
-- **ViT Variants**: Vision Transformer models (B-16, B-32, L-14)
-
-## Attacks
-
-- **ES_1_Lambda**: Evolutionary Strategy attack
-- **PGD**: Projected Gradient Descent
-- **CEM**: Class Expectation over Max
-- **ESGD**: Evolutionary Stochastic Gradient Descent
-- **NES**: Natural Evolutionary Strategies
-- **GridES_1_Lambda**: Grid-based Evolutionary Strategy
-
-## Results
-
-Evaluation results are stored in `evaluate_result/` with JSON and text files containing attack success rates, perturbation norms, and other metrics for different models and datasets.
-
-## Project Structure
+### Project Structure (attack folder)
 
 ```
-.
+attack/
 ├── main_attack.py              # Main attack script
+├── eval.py                     # Evaluation script
+├── test_clean_performance.py   # Test clean performance
+├── transfer_attack.py          # Transfer attack script
+├── ds_test.py                  # Denoised smoothing test
 ├── modules/
 │   ├── attack/                 # Attack implementations
+│   │   ├── attack.py
+│   │   ├── evaluator.py
+│   │   └── util.py
 │   ├── dataset/                # Dataset loaders
+│   │   ├── base.py
+│   │   ├── covid.py
+│   │   ├── entrep.py
+│   │   ├── mimic.py
+│   │   ├── rsna.py
+│   │   └── factory.py
 │   ├── models/                 # Model definitions
-│   └── utils/                  # Utilities and constants
-├── evaluate_result/            # Evaluation outputs
-└── README.md
+│   │   ├── base.py
+│   │   ├── biomedclip.py
+│   │   ├── entrep.py
+│   │   ├── medclip.py
+│   │   ├── robustmedclip.py
+│   │   ├── vit.py
+│   │   ├── vision_model.py
+│   │   ├── factory.py
+│   │   └── RobustMedCLIP/
+│   └── utils/                  # Utilities
+│       ├── constants.py
+│       ├── helpers.py
+│       └── logging_config.py
+├── evaluate_result/            # Evaluation results
+└── README.md                   # Detailed attack instructions
 ```
 
-## Contributing
+---
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+## 📋 System Requirements
+
+- Python 3.8+
+- PyTorch 1.10+
+- CUDA 11.0+ (if using GPU)
+- Jupyter Notebook (for running .ipynb files)
+- See `requirements.txt` in each folder for detailed dependencies
+
+---
+
+
+
+## 📝 Notes
+
+- Notebooks provide integrated, self-contained training scripts
+- Automatically handle library imports and dependencies
+- Results are saved for use in subsequent attack experiments
+- GPU acceleration is required for faster training
+
+---
