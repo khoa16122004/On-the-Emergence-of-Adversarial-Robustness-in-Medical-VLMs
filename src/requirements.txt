@@ -1,0 +1,10 @@
+transformers
+pydicom
+open_clip_torch
+wget
+huggingface_hub
+open_clip
+torch
+datasets
+godwn
+torchvision
