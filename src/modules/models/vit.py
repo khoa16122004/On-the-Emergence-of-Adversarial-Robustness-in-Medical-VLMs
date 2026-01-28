@@ -33,7 +33,6 @@ class ViTModel(nn.Module):
         new_sd = OrderedDict()
         for k, v in sd.items():
             nk = k
-            # Bỏ lần lượt các prefix nếu có
             for p in prefixes:
                 if nk.startswith(p):
                     nk = nk[len(p):]
@@ -89,7 +88,7 @@ class ViTModel(nn.Module):
         return text_features
 
     
-    def encode_pretransform_image( # truyền voad image tensor dwuodjc scale
+    def encode_pretransform_image( 
         self,
         images: torch.Tensor
     ) -> torch.Tensor:

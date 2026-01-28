@@ -475,8 +475,6 @@ class ENTRepModel(nn.Module):
         self.tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-base-patch32")
         self.normalize_transform = constants.TENSOR_NORMALIZE_TRANSFORM['entrep']
         self.mode_pretrained = mode_pretrained
-        # Create text encoder (optional)
-        # Không load text_checkpoint nếu có checkpoint (sẽ load sau)
         if text_encoder_type == 'clip':
             logger.info(f"🏗️ Creating CLIP text encoder...")
             self.text_model = CLIPTextEncoder(
@@ -530,10 +528,7 @@ class ENTRepModel(nn.Module):
             logger.error(f"Failed to download ENTREP checkpoint: {e}")
             return None
     def _load_full_checkpoint(self, checkpoint_path: str):
-        """
-        Load checkpoint cho toàn bộ ENTRep model (vision + text + logit_scale)
-        Tự động filter ra classifier keys nếu num_classes khác để tránh size mismatch
-        """
+
         logger.info(f"📥 Loading full ENTRep checkpoint: {checkpoint_path}")
         checkpoint = torch.load(checkpoint_path, map_location='cpu')
         
@@ -542,20 +537,16 @@ class ENTRepModel(nn.Module):
         else:
             state_dict = checkpoint
         
-        # Filter ra classifier keys để tránh size mismatch khi num_classes khác
         filtered_state_dict = {}
         skipped_keys = []
         
-        # Get current model state để check size compatibility
         current_state = self.state_dict()
         
         for key, value in state_dict.items():
-            # Skip nếu là classifier key
             if 'classifier' in key:
                 skipped_keys.append(key)
                 continue
             
-            # Skip nếu key có size mismatch
             if key in current_state:
                 if value.shape != current_state[key].shape:
                     logger.warning(f"   ⚠️ Size mismatch for {key}: {value.shape} vs {current_state[key].shape}, skipping")
@@ -582,7 +573,6 @@ class ENTRepModel(nn.Module):
         else:
             logger.info("✅ Full ENTRep checkpoint loaded (backbone + feature_projection loaded, classifier re-initialized)")
         
-        # Log thông tin từ checkpoint nếu có
         if 'epoch' in checkpoint:
             logger.info(f"   📊 Checkpoint epoch: {checkpoint['epoch']}")
         if 'best_metric' in checkpoint:
@@ -706,7 +696,7 @@ class ENTRepModel(nn.Module):
         
         return image_features     
     
-    def encode_pretransform_image( # truyền voad image tensor dwuodjc scale
+    def encode_pretransform_image(
         self,
         images: torch.Tensor
     ) -> torch.Tensor:
