@@ -97,23 +97,6 @@ The notebook includes:
 
 ## 2. Adversarial Attack Experiments
 
-### Overview
-
-This folder contains code and data for conducting comprehensive adversarial attacks on various medical VLM models to evaluate their robustness.
-
-### Installation
-
-1. Navigate to the attack folder:
-   ```bash
-   cd attack
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Download required datasets and place them in the `local_data` directory as specified in `modules/utils/constants.py`.
 
 ### Key Files
 
@@ -235,7 +218,7 @@ attack/
 ---
 
 ## 📋 System Requirements
-
+- A H100 80GB - GPU
 - Python 3.8+
 - PyTorch 1.10+
 - CUDA 11.0+ (if using GPU)
