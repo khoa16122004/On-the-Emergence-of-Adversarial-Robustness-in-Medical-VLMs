@@ -2,7 +2,6 @@
 
 This project explores the robustness of Vision Language Models (VLMs) in the medical domain when facing adversarial attacks. The workflow includes SSL finetuning of medical VLMs, denoised smoothing implementation, and comprehensive adversarial attack experiments.
 
-The pretrained are provided in the following link: 
 
 ---
 
