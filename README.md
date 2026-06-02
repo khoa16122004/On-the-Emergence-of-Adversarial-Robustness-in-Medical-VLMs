@@ -2,6 +2,8 @@
 
 This project explores the robustness of Vision Language Models (VLMs) in the medical domain when facing adversarial attacks. The workflow includes SSL finetuning of medical VLMs, denoised smoothing implementation, and comprehensive adversarial attack experiments.
 
+The pretrained are provided in the following link: 
+
 ---
 
 ## 📁 Project Structure Overview
@@ -224,16 +226,5 @@ attack/
 - CUDA 11.0+ (if using GPU)
 - Jupyter Notebook (for running .ipynb files)
 - See `requirements.txt` in each folder for detailed dependencies
-
----
-
-
-
-## 📝 Notes
-
-- Notebooks provide integrated, self-contained training scripts
-- Automatically handle library imports and dependencies
-- Results are saved for use in subsequent attack experiments
-- GPU acceleration is required for faster training
 
 ---
