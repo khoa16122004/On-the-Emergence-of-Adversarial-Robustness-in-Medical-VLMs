@@ -244,13 +244,6 @@ class MedCLIPModel(VisionLanguageModel):
         }
     
     def load_checkpoint(self, checkpoint_path: str, strict: bool = False):
-        """
-        Load full model weights from checkpoint.
-        
-        Args:
-            checkpoint_path: Path to the checkpoint file or directory
-            strict: Whether to strictly enforce that the keys in state_dict match
-        """
         if os.path.isdir(checkpoint_path):
             checkpoint_file = os.path.join(checkpoint_path, constants.WEIGHTS_NAME)
         else:
@@ -542,7 +535,7 @@ class MedCLIPModel(VisionLanguageModel):
         
         return image_features    
     
-    def encode_pretransform_image( # truyền voad image tensor dwuodjc scale
+    def encode_pretransform_image( 
         self,
         images: torch.Tensor
     ) -> torch.Tensor:

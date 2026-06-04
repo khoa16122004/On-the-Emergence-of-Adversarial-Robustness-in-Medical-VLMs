@@ -59,8 +59,8 @@ class BioMedCLIPModel(VisionLanguageModel):
             local_path = hf_hub_download(
                 repo_id=repo_id,
                 filename=file_name,
-                local_dir=".",          # lưu ngay thư mục hiện tại
-                local_dir_use_symlinks=False  # QUAN TRỌNG: copy file thật, không tạo symlink
+                local_dir=".",          
+                local_dir_use_symlinks=False
             )   
 
             ckpt = torch.load(local_path)
@@ -192,7 +192,7 @@ class BioMedCLIPModel(VisionLanguageModel):
         
         return image_features
     
-    def encode_posttransform_image( # truyền voad image tensor dwuodjc scale
+    def encode_posttransform_image( 
         self,
         images: torch.Tensor
     ) -> torch.Tensor:
@@ -214,7 +214,7 @@ class BioMedCLIPModel(VisionLanguageModel):
         
         return image_features    
             
-    def encode_pretransform_image( # truyền voad image tensor dwuodjc scale
+    def encode_pretransform_image( 
         self,
         images: torch.Tensor
     ) -> torch.Tensor:
